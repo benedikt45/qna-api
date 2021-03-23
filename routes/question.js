@@ -6,6 +6,6 @@ const controller = require("../controllers/question.js");
 router.use(controller.trace);
 router.get("/random", controller.getRandom);
 router.get("/id/:id", controller.getById);
-router.get("/topic/:topic", controller.getByTopic);
+router.get("/topic/random/:topic", controller.getRandomByTopic);
 
 module.exports = router;
