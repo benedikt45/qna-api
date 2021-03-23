@@ -9,5 +9,4 @@ const questionSchema = new Schema({
   topic: String
 });
 
-exports.Question = mongoose.model("Question", questionSchema);
-exports.mongodbConnection = async (url) => await mongoose.connect(url, { useUnifiedTopology: true, useNewUrlParser: true });
+module.exports = mongoose.model("Question", questionSchema);
