@@ -51,8 +51,12 @@ function findAndSendQuestion(req, res, topic, id) {
       });
 }
 
-function getTopicList() {
+function getTopicList(req, res) {
+  Question.distinct('topic', (err, topics) => {
+    if (err) console.log(err);
 
+    res.json({"Topics": JSON.stringify(topics)})
+  })
 }
 
 function trace(req, res, next) {
