@@ -1,10 +1,11 @@
 const express = require("express");
-const app = express();
 const error = require("./controllers/404.js");
 const questionRouter = require("./routes/question.js");
 const mongoose = require("mongoose");
 const configuration = require("./configuration.js");
 
+
+const app = express();
 
 app.use("/question", questionRouter);
 app.use(error);

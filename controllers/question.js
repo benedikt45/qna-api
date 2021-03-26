@@ -64,4 +64,19 @@ function trace(req, res, next) {
   next();
 }
 
-module.exports = {getById, getRandom, trace, getRandomByTopic, getTopicList};
+function addNew(req, res) {
+  if (!req.body) return res.sendStatus(400);
+
+  const question = req.body.question;
+  const answer = req.body.answer;
+  const topic = req.body.topic;
+  const qna = new Question({question, answer, topic});
+
+  qna.save((err) => {
+    if (err) return console.log(err);
+
+    res.json({"Ok": "Ok"});
+  })
+}
+
+module.exports = {getById, getRandom, trace, getRandomByTopic, getTopicList, addNew};
