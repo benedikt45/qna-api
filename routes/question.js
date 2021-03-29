@@ -10,6 +10,6 @@ router.get("/id/:id", controller.getById);
 router.get("/random/topic/:topic", controller.getRandomByTopic);
 router.get("/topics", controller.getTopicList);
 
-router.post("/add", controller.addNew);
+// router.post("/add", controller.addNew);
 
 module.exports = router;
