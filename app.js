@@ -3,10 +3,14 @@ const error = require("./controllers/404.js");
 const questionRouter = require("./routes/question.js");
 const mongoose = require("mongoose");
 const configuration = require("./configuration.js");
-const authRouter = require("./routes/auth.js")
+const authRouter = require("./routes/auth.js");
+const authController = require("../controllers/auth.js");
 
 
 const app = express();
+
+
+app.use(authController.authenticateToken);
 
 app.use("/question", questionRouter);
 app.use("/auth", authRouter);
