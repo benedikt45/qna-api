@@ -3,12 +3,15 @@ const error = require("./controllers/404.js");
 const questionRouter = require("./routes/question.js");
 const mongoose = require("mongoose");
 const configuration = require("./configuration.js");
+const authRouter = require("./routes/auth.js")
 
 
 const app = express();
 
 app.use("/question", questionRouter);
-app.use(error);
+app.use("/auth", authRouter);
+
+//app.use(error);
 
 app.listen(3000, async () => {
   await mongoose.connect(configuration.qnaStringConnection, { useUnifiedTopology: true, useNewUrlParser: true });
