@@ -12,6 +12,9 @@ module.exports = {
         },
         env_production : {
           "NODE_ENV": "production",
+        },
+        env_production_token : {
+          "NODE_ENV": "production",
           "TOKEN_SECRET": TOKEN_SECRET,
         }
       }
