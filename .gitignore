@@ -1,3 +1,4 @@
 .idea/
 node_modules/
 configuration.js
+mongo-qna.js
