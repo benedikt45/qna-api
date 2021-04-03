@@ -4,7 +4,7 @@ const questionRouter = require("./routes/question.js");
 const mongoose = require("mongoose");
 const configuration = require("./configuration.js");
 const authRouter = require("./routes/auth.js");
-const authController = require("../controllers/auth.js");
+const authController = require("./controllers/auth.js");
 
 
 const app = express();
