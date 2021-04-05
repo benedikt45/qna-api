@@ -5,17 +5,26 @@ const mongoose = require("mongoose");
 const configuration = require("./configuration.js");
 const authRouter = require("./routes/auth.js");
 const authController = require("./controllers/auth.js");
+const bodyParser = require('body-parser');
 
 
 const app = express();
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
 
 app.use(authController.authenticateToken);
 
+// app.use("/auth", authRouter);
 app.use("/question", questionRouter);
-app.use("/auth", authRouter);
 
-//app.use(error);
+
+// app.use(errorHandler);
+//
+// function errorHandler(err, req, res, next) {
+//   console.log('Error handle')
+//   res.sendStatus(err)
+// }
 
 app.listen(3000, async () => {
   await mongoose.connect(configuration.qnaStringConnection, { useUnifiedTopology: true, useNewUrlParser: true });
