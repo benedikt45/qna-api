@@ -1,8 +1,10 @@
 const Question = require("../models/question.js")
 const randomNumber = require("../utils/randomNumber.js");
+const isNumeric = require("../utils/isNumeric.js");
+const errors = require("./errors.js");
 
 function getRandom(req, res) {
-  findRandom(req, res, {});
+  findRandom(req, res);
 }
 
 function getRandomByTopic(req, res) {
@@ -14,49 +16,42 @@ function getById(req, res) {
   const id = req.params.id;
 
   Question.countDocuments({}, function (err, count) {
-    try {
-      const intId = parseInt(id);
-      if (intId > count) {
-        res.json({"Error": `Max id now is ${count}`});
-      } else if (intId === 0) {
-        res.json({"Error": `ID must be over 0`});
-      } else {
-        findAndSendQuestion(req, res, {}, id - 1);
-      }
-    } catch (e) {
-      res.json({"Error": "ID must be number"});
-    }
+    if (!isNumeric(id)) return res.status(500).send("ID must be numeric!");
+    let numericId = parseInt(id);
+    if (numericId > count) return res.status(500).send(`Max id now is ${count}!`);
+    if (numericId === 0) return res.status(500).send("ID must be over 0!");
+
+    findAndSendQuestion(req, res, numericId - 1);
   })
 }
 
-function findRandom(req, res, topic) {
+function findRandom(req, res, topic = {}) {
   Question.countDocuments(topic, function (err, count) {
-    const random = randomNumber(0, count - 1)
-    findAndSendQuestion(req, res, topic, random);
+    const random = randomNumber(0, count - 1);
+    findAndSendQuestion(req, res, random.topic);
   });
 }
 
-function findAndSendQuestion(req, res, topic, id) {
+function findAndSendQuestion(req, res, id, topic = {}) {
   Question.findOne(topic).skip(id).exec(
       function (err, doc) {
-        if (!doc) {
-          res.json({"Error": "Topic not exist"})
-        } else {
-          res.json({
-            "question": doc.question,
-            "answer": doc.answer,
-            "topic": doc.topic
-          });
-        }
+        errors.checkError(err, req, res, next);
+        if (!doc) return res.status(500).send("Topic not exist!");
+
+        res.json({
+          "question": doc.question,
+          "answer": doc.answer,
+          "topic": doc.topic
+        });
       });
 }
 
-function getTopicList(req, res) {
+function getTopicList(req, res, next) {
   Question.distinct('topic', (err, topics) => {
-    if (err) console.log(err);
+    errors.checkError(err, req, res, next);
 
     res.json({"Topics": topics})
-  })
+  });
 }
 
 function getRange(req, res, next) {
@@ -68,21 +63,17 @@ function getRange(req, res, next) {
   }
 
   Question.find().sort({_id: 1}).skip(100).exec((err, result) => {
-    if (err) return res.sendStatus(400);
+    errors.checkError(err, req, res, next);
   })
 }
 
 function getAll(req, res, next) {
   Question.find().exec(
       function (err, questions) {
-        if (err) return res.sendStatus(400);
+        errors.checkError(err, req, res, next);
+
         res.json(questions);
       })
-}
-
-function trace(req, res, next) {
-  console.log(`Question request ${new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')}`);
-  next();
 }
 
 function addNew(req, res, next) {
@@ -92,10 +83,10 @@ function addNew(req, res, next) {
   const qna = new Question({question, answer, topic});
 
   qna.save((err) => {
-    if (err) return console.log(err);
+    errors.checkError(err, req, res, next);
 
-    res.json({"Ok": "Ok"});
+    res.status(201).send('Question was created!');
   })
 }
 
-module.exports = {getById, getRandom, trace, getRandomByTopic, getTopicList, addNew, getRange, getAll};
+module.exports = {getById, getRandom, getRandomByTopic, getTopicList, addNew, getRange, getAll};
