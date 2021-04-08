@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 const Auth = require("../models/auth.js");
-const config = require("../configuration.js");
 
 
 function checkUsername(req, res, next) {
@@ -16,14 +15,14 @@ function getToken(req, res, next) {
 }
 
 function authenticateToken(req, res, next) {
-  if (!config.TOKEN_SECRET) return next();
+  if (!process.env.TOKEN_SECRET || process.env.TOKEN_SECRET === "") return next();
 
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
   if (token == null) return res.sendStatus(401);
 
-  jwt.verify(token, config.TOKEN_SECRET,
+  jwt.verify(token, process.env.TOKEN_SECRET,
       (err, user) => {
         if (err) return res.sendStatus(403);
 
