@@ -6,16 +6,19 @@ const configuration = require("./configuration.js");
 const authRouter = require("./routes/auth.js");
 const authController = require("./controllers/auth.js");
 const bodyParser = require('body-parser');
+const cors = require("cors");
 
 
 const app = express();
 
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+// app.use(cors());
 
-app.use(authController.authenticateToken);
+// app.use(authController.authenticateToken);
 
 // app.use("/auth", authRouter);
+
 app.use("/question", questionRouter);
 
 
@@ -26,7 +29,7 @@ app.use("/question", questionRouter);
 //   res.sendStatus(err)
 // }
 
-app.listen(3000, async () => {
+app.listen(3001, async () => {
   await mongoose.connect(configuration.qnaStringConnection, { useUnifiedTopology: true, useNewUrlParser: true });
   console.log('Server start');
 });

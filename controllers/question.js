@@ -55,8 +55,29 @@ function getTopicList(req, res) {
   Question.distinct('topic', (err, topics) => {
     if (err) console.log(err);
 
-    res.json({"Topics": JSON.stringify(topics)})
+    res.json({"Topics": topics})
   })
+}
+
+function getRange(req, res, next) {
+  const start = req.query["start"],
+      end = req.query["end"];
+
+  if (!end || !start) {
+    return res.sendStatus(400);
+  }
+
+  Question.find().sort({_id: 1}).skip(100).exec((err, result) => {
+    if (err) return res.sendStatus(400);
+  })
+}
+
+function getAll(req, res, next) {
+  Question.find().exec(
+      function (err, questions) {
+        if (err) return res.sendStatus(400);
+        res.json(questions);
+      })
 }
 
 function trace(req, res, next) {
@@ -64,9 +85,7 @@ function trace(req, res, next) {
   next();
 }
 
-function addNew(req, res) {
-  if (!req.body) return res.sendStatus(400);
-
+function addNew(req, res, next) {
   const question = req.body.question;
   const answer = req.body.answer;
   const topic = req.body.topic;
@@ -79,4 +98,4 @@ function addNew(req, res) {
   })
 }
 
-module.exports = {getById, getRandom, trace, getRandomByTopic, getTopicList, addNew};
+module.exports = {getById, getRandom, trace, getRandomByTopic, getTopicList, addNew, getRange, getAll};

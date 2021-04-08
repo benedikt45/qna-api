@@ -7,20 +7,20 @@ function trace(req, res, next) {
   next();
 }
 
-function getToken(req, res, next) {
-  console.log(req.body)
-  if (!req.body) {
-    return res.sendStatus(400);
-  } else if (!req.body.username) {
+function checkUsername(req, res, next) {
+  if (!req.body.username) {
     return res.sendStatus(400);
   }
+  next();
+}
 
+function getToken(req, res, next) {
   const token = Auth({username: req.body.username});
   res.json(token);
 }
 
 function authenticateToken(req, res, next) {
-  if (process.env.TOKEN_SECRET === '') next();
+  if (process.env.TOKEN_SECRET === '') return next();
 
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -36,4 +36,4 @@ function authenticateToken(req, res, next) {
   })
 }
 
-module.exports = {getToken, authenticateToken, trace};
+module.exports = {getToken, authenticateToken, trace, checkUsername};
