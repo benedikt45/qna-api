@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const Auth = require("../models/auth.js");
+const AuthToken = require("../models/authToken.js");
 
 
 function checkUsername(req, res, next) {
@@ -10,7 +10,7 @@ function checkUsername(req, res, next) {
 }
 
 function getToken(req, res, next) {
-  const token = Auth({username: req.body.username});
+  const token = AuthToken({username: req.body.username});
   res.json(token);
 }
 
@@ -26,7 +26,7 @@ function authenticateToken(req, res, next) {
       (err, user) => {
         if (err) return res.sendStatus(403);
 
-        req.user = user;
+        req.username = user.username;
         next();
       })
 }

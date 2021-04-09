@@ -50,7 +50,7 @@ function getTopicList(req, res, next) {
   Question.distinct('topic', (err, topics) => {
     errors.checkError(err, req, res, next);
 
-    res.json({"Topics": topics})
+    res.json(topics)
   });
 }
 
