@@ -1,18 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const controller = require("../controllers/question.js");
-const errors = require("../controllers/errors.js");
-const trace = require("../utils/trace.js");
+const controllerQuestion = require("../controllers/question.js");
+const {checkBodyFields} = require("../utils/checkBodyFields");
 
 
-router.use((req, res, next) => trace('Question', req, res, next));
+router.post("/topics", controllerQuestion.getTopicList);
 
-router.get("/random", controller.getRandom);
-router.get("/id/:id", controller.getById);
-router.get("/random/topic/:topic", controller.getRandomByTopic);
-router.get("/topics", controller.getTopicList);
-router.get("/range", controller.getRange);
-router.get("/all", controller.getAll);
-router.post("/add", errors.checkBody, controller.addNew);
+router.post("/random", controllerQuestion.getRandom);
+
+router.get("/all", controllerQuestion.getAll);
+
+router.post("/new", (req, res, next) => {
+  checkBodyFields(["question", "answer", "topic"], req, res, next)
+}, controllerQuestion.addNew);
+
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const TOKEN_SECRET = require('./configuration.js').TOKEN_SECRET
+const TOKEN_SECRET = require('./configuration.js').token.TOKEN_SECRET;
 
 module.exports = {
   apps : [
@@ -11,9 +11,6 @@ module.exports = {
           "TOKEN_SECRET": TOKEN_SECRET,
         },
         env_production : {
-          "NODE_ENV": "production",
-        },
-        env_production_token : {
           "NODE_ENV": "production",
           "TOKEN_SECRET": TOKEN_SECRET,
         }

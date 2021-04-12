@@ -1,37 +1,56 @@
 const express = require("express");
-const questionRouter = require("./routes/question.js");
 const mongoose = require("mongoose");
 const configuration = require("./configuration.js");
-const authTokenRouter = require("./routes/authToken.js");
-const authTokenController = require("./controllers/authToken.js");
-const authUserRouter = require("./routes/authLogin.js");
 const bodyParser = require('body-parser');
-const trace = require("./utils/trace.js");
-const cors = require("cors");
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
+const routerUser = require("./routes/user");
+const routerQuestion = require("./routes/question");
+const controllerUser = require("./controllers/user");
+const controllerToken = require("./controllers/token");
+const {checkBodyFields} = require("./utils/checkBodyFields");
 
 
 const app = express();
+const sess = {
+  secret: 'My test secret',
+  resave: false,
+  saveUninitialized: false,
+  store: new MongoStore({
+    mongoUrl: configuration.mongodb.connectionString,
+  }),
+  cookie: {
+    maxAge: Date.now() + (86400 * 1000),
+  }
+};
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-// app.use(cors());
 
-app.use((req, res, next) => trace('Unknown', req, res, next));
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', true);
+  sess.cookie.secure = true;
+}
+app.use(session(sess));
 
-//app.use("/authToken", authTokenRouter);
-app.use(authTokenController.authenticateToken);
-
-app.use("/auth", authUserRouter);
-
-app.use("/question", questionRouter);
+app.post("/token", (req, res, next) => {
+  checkBodyFields(["username"], req, res, next)
+}, controllerToken.createToken);
+app.use("/user", routerUser);
+app.all("*", controllerUser.checkSession, controllerToken.checkToken);
+app.use("/question", routerQuestion);
 
 app.use((err, req, res, next) => {
   console.log(err);
-  res.status(500).send(err.message);
-})
+  if (process.env.NODE_ENV !== "production") {
+    res.status(500).send(err.message);
+  } else {
+    res.sendStatus(500);
+  }
+});
 
 app.listen(3001, async () => {
-  await mongoose.connect(configuration.qnaStringConnection, { useUnifiedTopology: true, useNewUrlParser: true });
+  await mongoose.connect(configuration.mongodb.connectionString, {useUnifiedTopology: true, useNewUrlParser: true});
   console.log('Server start');
 });
 
