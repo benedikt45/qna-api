@@ -13,14 +13,14 @@ const {checkBodyFields} = require("./utils/checkBodyFields");
 
 const app = express();
 const sess = {
-  secret: 'My test secret',
+  secret: configuration.token.session_secret,
   resave: false,
   saveUninitialized: false,
   store: new MongoStore({
     mongoUrl: configuration.mongodb.connectionString,
   }),
   cookie: {
-    maxAge: Date.now() + (86400 * 1000),
+    // maxAge: configuration.cookie.maxAge,
   }
 };
 

@@ -4,7 +4,7 @@ const config = require("../configuration");
 
 async function createToken(req, res, next) {
   let username = req.body.username;
-  jwt.sign({username}, config.token.TOKEN_SECRET, {expiresIn: '1y'}, async (err, token) => {
+  jwt.sign({username}, process.env.TOKEN_SECRET, {expiresIn: '1d'}, async (err, token) => {
     if (err) {
       return next(err);
     }
@@ -29,12 +29,15 @@ async function checkToken(req, res, next) {
     return res.sendStatus(401);
   }
 
-  jwt.verify(config.token.TOKEN_SECRET, token, (err, data) => {
+  jwt.verify(token, process.env.TOKEN_SECRET, (err, data) => {
     if (err) {
-      return next(new Error(err.message));
+      return res.status(400).send(err.message);
     }
 
     req.loginBy = "token";
+    if (!req.user) {
+      req.user = {};
+    }
     req.user.username = data;
     next("route");
   });

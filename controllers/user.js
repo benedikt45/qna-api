@@ -47,10 +47,15 @@ function storeSession(req, res, next) {
 }
 
 function deleteSession(req, res, next) {
-  if (!req.session.user) {
-    delete req.session.user;
+  if (req.session.user) {
+    // delete req.session.user;
+    req.session.destroy((err) => {
+      if (err) return next(err);
+      res.clearCookie("connect.sid");
+      res.sendStatus(200);
+    })
   }
-  res.sendStatus(200);
+
 }
 
 function checkSession(req, res, next) {
@@ -70,4 +75,4 @@ function getUsernameBySession(req, res, next) {
   }
 }
 
-module.exports = {checkPassword, findUser, createUser, storeSession, deleteSession, checkSession}
+module.exports = {checkPassword, findUser, createUser, storeSession, deleteSession, checkSession, getUsernameBySession}
