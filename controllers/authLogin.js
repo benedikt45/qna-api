@@ -27,7 +27,7 @@ async function checkPassword(req, res, next) {
 
   if (!match) return res.status(401).send("Password incorrect!");
 
-  res.sendStatus(200);
+  res.status(200).end();
 }
 
 async function saveUser(req, res, next) {
@@ -39,7 +39,7 @@ async function saveUser(req, res, next) {
   user.save((err) => {
     errors.checkError(err, req, res, next);
 
-    res.status(201).send('Successful');
+    res.status(201).end();
   })
 }
 
