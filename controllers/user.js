@@ -43,7 +43,8 @@ function storeSession(req, res, next) {
     req.session.user = {id: req.user._id, username: req.user.username};
   }
   req.loginBy = "username/password";
-  res.sendStatus(200);
+  // res.sendStatus(200);
+  res.json({"username": req.session.user.username});
 }
 
 function deleteSession(req, res, next) {
@@ -69,7 +70,7 @@ function checkSession(req, res, next) {
 
 function getUsernameBySession(req, res, next) {
   if (!req.session.user) {
-    req.sendStatus(401);
+    res.sendStatus(401);
   } else {
     res.json({"username": req.session.user.username});
   }

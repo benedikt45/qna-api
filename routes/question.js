@@ -4,7 +4,7 @@ const controllerQuestion = require("../controllers/question.js");
 const {checkBodyFields} = require("../utils/checkBodyFields");
 
 
-router.post("/topics", controllerQuestion.getTopicList);
+router.get("/topics", controllerQuestion.getTopicList);
 
 router.post("/random", controllerQuestion.getRandom);
 

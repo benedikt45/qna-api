@@ -12,6 +12,8 @@ router.post("/login", (req, res, next) => {
   checkBodyFields(["username", "password"], req, res, next)
 }, controllerUser.findUser, controllerUser.checkPassword, controllerUser.storeSession);
 
+router.get("/login", controllerUser.getUsernameBySession);
+
 router.post("/logout", controllerUser.deleteSession);
 
 
