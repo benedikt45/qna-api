@@ -49,7 +49,9 @@ app.use((err, req, res, next) => {
   }
 });
 
-app.listen(3001, async () => {
+const port = process.env.SERVER_PORT || 3001;
+
+app.listen(port, async () => {
   await mongoose.connect(configuration.mongodb.connectionString, {useUnifiedTopology: true, useNewUrlParser: true});
   console.log('Server start');
 });
