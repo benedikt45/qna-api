@@ -14,4 +14,8 @@ router.use("/user", routerUser);
 router.all("*", controllerUser.checkSession, controllerToken.checkToken);
 router.use("/question", routerQuestion);
 
+router.use(function(req, res, next) {
+  res.status(404).send("Sorry cant find that!");
+});
+
 module.exports = router;

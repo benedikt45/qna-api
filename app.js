@@ -29,13 +29,13 @@ if (process.env.NODE_ENV === 'production') {
   sess.cookie.secure = true;
 }
 app.use(session(sess));
-app.use(express.static(path.join(__dirname, "qna-panel")));
+// app.use(express.static(path.join(__dirname, "qna-panel")));
 
 app.use("/api", routerAPI);
 
-app.get('/*', function (req, res) {
-  res.sendFile(path.join(__dirname, "qna-panel", 'index.html'));
-});
+// app.get('/*', function (req, res) {
+//   res.sendFile(path.join(__dirname, "qna-panel", 'index.html'));
+// });
 
 app.use((err, req, res, next) => {
   console.log(err);
