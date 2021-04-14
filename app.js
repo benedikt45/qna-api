@@ -4,11 +4,7 @@ const configuration = require("./configuration.js");
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-const routerUser = require("./routes/user");
-const routerQuestion = require("./routes/question");
-const controllerUser = require("./controllers/user");
-const controllerToken = require("./controllers/token");
-const {checkBodyFields} = require("./utils/checkBodyFields");
+const routerAPI = require("./routes/api");
 
 
 const app = express();
@@ -33,12 +29,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 app.use(session(sess));
 
-app.post("/token", (req, res, next) => {
-  checkBodyFields(["username"], req, res, next)
-}, controllerToken.createToken);
-app.use("/user", routerUser);
-app.all("*", controllerUser.checkSession, controllerToken.checkToken);
-app.use("/question", routerQuestion);
+app.use("/api", routerAPI);
 
 app.use((err, req, res, next) => {
   console.log(err);
