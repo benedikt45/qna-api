@@ -57,7 +57,18 @@ async function addNew(req, res, next) {
   }
 }
 
-module.exports = {getRandom, getTopicList, addNew, getAll};
+async function del(req, res, next) {
+  const id = req.body.id;
+
+  try {
+    await Question.findOneAndDelete({_id: id}).exec();
+    res.sendStatus(202);
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = {getRandom, getTopicList, addNew, getAll, del};
 
 // Старые функции
 // function getRandom(req, res) {

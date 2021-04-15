@@ -14,5 +14,9 @@ router.post("/new", (req, res, next) => {
   checkBodyFields(["question", "answer", "topic"], req, res, next)
 }, controllerQuestion.addNew);
 
+router.post("/delete", (req, res, next) => {
+  checkBodyFields(["id"], req, res, next)
+}, controllerQuestion.del);
+
 
 module.exports = router;
